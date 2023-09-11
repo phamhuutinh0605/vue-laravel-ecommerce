@@ -87,7 +87,7 @@
         v-if="append"
         class="inline-flex items-center px-3 rounded-r-md border border-l-0 border-gray-300 bg-gray-50 text-gray-500 text-sm"
       >
-        {{ append }}
+        {{ append }}345
       </span>
     </div>
     <small v-if="errors && errors[0]" class="text-red-600">{{

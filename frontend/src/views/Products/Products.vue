@@ -9,7 +9,7 @@
       Add new Product
     </router-link>
   </div>
-  <ProductTable />
+  <ProductTable @clickEditProduct="editProduct" />
   <ProductModal
     v-model:showProductModal="showProductModal"
     :product="productModel"
@@ -20,7 +20,7 @@
 // -------------------import----------------------------
 import ProductTable from "./ProductTable.vue";
 import ProductModal from "./ProductModal.vue";
-import { computed, ref } from "vue";
+import { computed, reactive, ref } from "vue";
 
 // -------------------dec----------------------------
 let showProductModal = ref(false);
@@ -31,11 +31,14 @@ const DEFAULT_PRODUCT = {
   image: "",
   price: "",
 };
-const product = computed(() => store.state.products);
-const productModel = ref({ ...DEFAULT_PRODUCT });
+let productModel = reactive({ ...DEFAULT_PRODUCT });
 // -------------------func----------------------------
 function showAddNewModal() {
   showProductModal.value = true;
+}
+function editProduct(data) {
+  productModel = data;
+  showAddNewModal();
 }
 </script>
 
