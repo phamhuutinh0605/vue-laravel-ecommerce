@@ -19,6 +19,7 @@ class AdminUserSeeder extends Seeder
         User::create([
             "name" => "Admin",
             "email" => "admin@gmail.com",
+            "address" => "20 Nguyễn Khoái Quận 4, Hồ CHí Minh",
             "password" => Hash::make("12345"),
             "email_verified_at" => now(),
             'is_admin' => true
@@ -26,6 +27,7 @@ class AdminUserSeeder extends Seeder
         User::create([
             "name" => "Hữu Tình",
             "email" => "huutinh@gmail.com",
+            "address" => "1920 Phạm Thế Hiển, Quận 8, Hồ CHí Minh",
             "password" => Hash::make("12345"),
             "email_verified_at" => now(),
             'is_admin' => false
@@ -33,6 +35,7 @@ class AdminUserSeeder extends Seeder
         User::create([
             "name" => "Hoàng Công",
             "email" => "hoangcong@gmail.com",
+            "address" => "102 Sư Vạn Hạnh, Quận 10, Hồ CHí Minh",
             "password" => Hash::make("12345"),
             "email_verified_at" => now(),
         ]);

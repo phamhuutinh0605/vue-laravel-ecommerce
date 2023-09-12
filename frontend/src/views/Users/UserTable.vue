@@ -4,7 +4,7 @@
       <div class="flex items-center">
         <span class="whitespace-nowrap mr-3">Per Page</span>
         <select
-          @change="getProducts(null)"
+          @change="getUsers(null)"
           v-model="perPage"
           class="appearance-none relative block w-24 px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
         >
@@ -18,13 +18,13 @@
       <div class="">
         <input
           v-model="search"
-          @change="getProducts(null)"
+          @change="getUsers(null)"
           class="appearance-none relative block w-48 px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
           placeholder="Type to Search products"
         />
       </div>
     </div>
-    <div class="py-8 flex justify-center" v-if="products.loading">
+    <div class="py-8 flex justify-center" v-if="users.loading">
       <Loading />
     </div>
     <template v-else>
@@ -35,72 +35,72 @@
               field="id"
               :sort-field="sortField"
               :sort-direction="sortDirection"
-              @click="sortProducts"
+              @click="sortUsers"
             >
               ID
             </TableHeaderCell>
             <TableHeaderCell
-              field="image"
+              field="name"
               :sort-field="sortField"
               :sort-direction="sortDirection"
             >
-              Image
+              Name
             </TableHeaderCell>
             <TableHeaderCell
-              field="title"
+              field="email"
               :sort-field="sortField"
               :sort-direction="sortDirection"
-              @click="sortProducts"
+              @click="sortUsers"
             >
-              Title
+              Email
             </TableHeaderCell>
             <TableHeaderCell
-              field="price"
+              field="address"
               :sort-field="sortField"
               :sort-direction="sortDirection"
-              @click="sortProducts"
+              @click="sortUsers"
             >
-              Price
+              Address
             </TableHeaderCell>
             <TableHeaderCell
-              field="updated_at"
+              field="created_at"
               :sort-field="sortField"
               :sort-direction="sortDirection"
-              @click="sortProducts"
+              @click="sortUsers"
             >
-              Last Updated At
+              Join at
             </TableHeaderCell>
             <TableHeaderCell field="actions"> Actions </TableHeaderCell>
           </tr>
         </thead>
-        <tbody v-if="products.loading || !products.data.length">
+        <tbody v-if="users.loading || !users.data.length">
           <tr>
             <td colspan="6">
-              <Loading v-if="products.loading" />
+              <Loading v-if="users.loading" />
               <p v-else class="text-center py-8 text-gray-700">
-                There are no products
+                There are no users
               </p>
             </td>
           </tr>
         </tbody>
         <tbody v-else class="animate-fade-in-down animation-delay">
-          <tr v-for="(product, index) of products.data" :key="index">
-            <td class="border-b p-2">{{ product.id }}</td>
+          <tr v-for="(user, index) of users.data" :key="index">
+            <td class="border-b p-2">{{ user.id }}</td>
             <td class="border-b p-2">
               <img
                 class="w-16 h-16 object-cover"
-                :src="product.image_url"
-                :alt="product.title"
+                :src="user.image_url"
+                :alt="user.name"
               />
             </td>
             <td
               class="border-b p-2 max-w-[200px] whitespace-nowrap overflow-hidden text-ellipsis"
             >
-              {{ product.title }}
+              {{ user.email }}
             </td>
-            <td class="border-b p-2">${{ product.price }}</td>
+            <td class="border-b p-2">{{ user.address }}</td>
             <td class="border-b p-2">
-              {{ product.updated_at }}
+              {{ user.created_at }}
             </td>
             <td class="border-b p-2 z-100">
               <Menu as="div" class="relative inline-block text-left">
@@ -136,7 +136,7 @@
                               : 'text-gray-900',
                             'group flex w-full items-center rounded-md px-2 py-2 text-sm ',
                           ]"
-                          @click="editProduct(product)"
+                          @click="editUser(user)"
                         >
                           <PencilIcon
                             :active="active"
@@ -154,7 +154,7 @@
                               : 'text-gray-900',
                             'group flex w-full items-center rounded-md px-2 py-2 text-sm',
                           ]"
-                          @click="deleteProduct(product)"
+                          @click="deleteUser(user)"
                         >
                           <TrashIcon
                             :active="active"
@@ -172,21 +172,18 @@
           </tr>
         </tbody>
       </table>
-      <div
-        v-if="!products.loading"
-        class="flex justify-between items-center mt-5"
-      >
-        <div v-if="products.data.length">
-          Showing from {{ products.from }} to {{ products.to }}
+      <div v-if="!users.loading" class="flex justify-between items-center mt-5">
+        <div v-if="users.data.length">
+          Showing from {{ users.from }} to {{ users.to }}
         </div>
         <nav
-          v-if="products.total > products.limit"
+          v-if="users.total > users.limit"
           class="relative z-0 inline-flex justify-center rounded-md shadow-sm -space-x-px"
           aria-label="Pagination"
         >
           <!-- Current: "z-10 bg-indigo-50 border-indigo-500 text-indigo-600", Default: "bg-white border-gray-300 text-gray-500 hover:bg-gray-50" -->
           <a
-            v-for="(link, i) of products.links"
+            v-for="(link, i) of users.links"
             :key="i"
             :disabled="!link.url"
             href="#"
@@ -198,7 +195,7 @@
                 ? 'z-10 bg-indigo-50 border-indigo-500 text-indigo-600'
                 : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50',
               i === 0 ? 'rounded-l-md' : '',
-              i === products.links.length - 1 ? 'rounded-r-md' : '',
+              i === users.links.length - 1 ? 'rounded-r-md' : '',
               !link.url ? ' bg-gray-100 text-gray-700' : '',
             ]"
             v-html="link.label"
@@ -209,14 +206,14 @@
     </template>
   </div>
 </template>
-
-<script setup>
+  
+  <script setup>
 // -------------------import----------------------------
 import Loading from "../../components/LoadingIcon.vue";
 import TableHeaderCell from "../../components/core/Table/TableHeaderCell.vue";
 import { computed, onMounted, ref } from "vue";
 import store from "../../store/index";
-import { PRODUCTS_PER_PAGE } from "../../constant";
+import { USERS_PER_PAGE } from "../../constant";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/vue";
 import {
   DotsVerticalIcon,
@@ -225,17 +222,16 @@ import {
 } from "@heroicons/vue/outline";
 // -------------------dec----------------------------
 let search = ref("");
-let perPage = ref(PRODUCTS_PER_PAGE);
+let perPage = ref(USERS_PER_PAGE);
 let loading = ref(false);
 let sortField = ref("id");
 let sortDirection = ref("asc");
-const emit = defineEmits("clickEditProduct");
+const emit = defineEmits("clickEditUser");
+const users = computed(() => store.state.users);
 // -------------------func----------------------------
-const products = computed(() => store.state.products);
-console.log(products);
-function getProducts(url = null) {
+function getUsers(url = null) {
   loading.value = true;
-  store.dispatch("getProducts", {
+  store.dispatch("getUsers", {
     url,
     sort_field: sortField.value,
     sort_direction: sortDirection.value,
@@ -243,13 +239,13 @@ function getProducts(url = null) {
     perPage: perPage.value,
   });
 }
-onMounted(() => getProducts());
+onMounted(() => getUsers());
 function getForPage(event, link) {
   event.preventDefault();
   if (!link.url || link.active) return;
-  getProducts(link.url);
+  getUsers(link.url);
 }
-function sortProducts(field) {
+function sortUsers(field) {
   if (field === sortField.value) {
     if (sortDirection.value === "desc") {
       sortDirection.value = "asc";
@@ -260,21 +256,20 @@ function sortProducts(field) {
     sortField.value = field;
     sortDirection.value = "asc";
   }
-
-  getProducts();
+  getUsers();
 }
-function deleteProduct(product) {
-  if (confirm("Bạn có chắc chắn muốn xóa sản phẩm này không ?")) {
-    store.dispatch("deleteProduct", product.id).then((res) => {
-      getProducts();
+function deleteUser(user) {
+  if (confirm("Bạn có chắc chắn muốn xóa tài khoản này không ?")) {
+    store.dispatch("deleteUser", user.id).then((res) => {
+      getUsers();
     });
   }
   return;
 }
-function editProduct(product) {
-  emit("clickEditProduct", product);
+function editUser(user) {
+  emit("clickEditUser", user);
 }
 </script>
-
-<style lang="scss" scoped>
+  
+  <style lang="scss" scoped>
 </style>

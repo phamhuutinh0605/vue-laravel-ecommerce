@@ -11,9 +11,9 @@
         <div>
           <MenuButton class="flex items-center p-3">
             <img
-              src="https://i.pravatar.cc/300"
+              :src="currentUser.image_url"
               alt=""
-              class="w-8 rounded-full"
+              class="w-8 h-8 rounded-2xl object-cover"
             />
             <span class="ml-2">{{ currentUser.name }}</span>
             <ChevronDownIcon

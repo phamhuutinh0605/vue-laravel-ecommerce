@@ -141,6 +141,7 @@ function login() {
       router.push({ name: "app.dashboard" });
     })
     .catch(({ response }) => {
+      console.log(response);
       loading.value = false;
       errorMsg.value = response.data.message;
     });

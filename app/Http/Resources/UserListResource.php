@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class UserResource extends JsonResource
+class UserListResource extends JsonResource
 {
     static public $wrap = false;
     /**
@@ -22,7 +22,6 @@ class UserResource extends JsonResource
             "image_url" => $this->image,
             "address" => $this->address,
             "created_at" => (new \DateTime($this->created_at))->format("d-m-Y H:i"),
-            "updated_at" => (new \DateTime($this->updated_at))->format("d-m-Y H:i"),
             "is_admin" => $this->is_admin,
         ];
     }

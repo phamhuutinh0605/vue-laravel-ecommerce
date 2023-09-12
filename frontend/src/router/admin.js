@@ -31,7 +31,7 @@ const admin = [
             {
                 path: "users",
                 name: "app.users",
-                component: () => import("../views/Users.vue"),
+                component: () => import("../views/Users/Users.vue"),
                 meta: {
                     requiresAuth: true,
                 },
