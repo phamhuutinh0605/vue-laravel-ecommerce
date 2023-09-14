@@ -129,7 +129,7 @@ let errorMsg = ref("");
 const user = {
   email: "",
   password: "",
-  remember: true,
+  remember: false,
 };
 
 function login() {

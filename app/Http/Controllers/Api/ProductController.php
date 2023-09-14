@@ -1,16 +1,17 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
-use App\Http\Requests\UserRequest;
-use App\Http\Resources\UserListResource;
-use App\Http\Resources\UserResource;
-use App\Models\User;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\ProductRequest;
+use App\Http\Resources\ProductListResource;
+use App\Http\Resources\ProductResource;
+use App\Models\Product;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 
-class UserController extends Controller
+class ProductController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -19,35 +20,30 @@ class UserController extends Controller
      */
     public function index()
     {
-        $search = request("search", false);
-        $perPage = request("per_page", 10);
+        $search = request('search', false);
+        $perPage = request('per_page', 10);
+        $query = Product::query();
         $sortField = request('sort_field', 'id');
         $sortDirection = request('sort_direction', 'asc');
-
-        $query = User::query()
-            ->orderBy($sortField, $sortDirection);
+        $query->orderBy($sortField, $sortDirection);
         if ($search) {
-            $query->where("name", "like", "%" . $search . "%");
-            $query->orWhere("email", "like", "%" . $search . "%");
-            $query->orWhere("address", "like", "%" . $search . "%");
+            $query->where("title", "like", "%{$search}%");
+            $query->orWhere("description", "like", "%{$search}%");
         }
-        return UserListResource::collection($query->paginate($perPage));
+        return ProductListResource::collection($query->paginate($perPage));
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\UserRequest  $request
+     * @param  \App\Http\Requests\ProductRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(UserRequest $request)
+    public function store(ProductRequest $request)
     {
         $data = $request->validated();
-        $data['is_admin'] = true;
-        $data['email_verified_at'] = date('Y-m-d H:i:s');
-        $data['password'] = \Hash::make($data['password']);
-        $data['created_by'] = $request->user()->id;
-        $data['updated_by'] = $request->user()->id;
+        $data['created_at'] = $request->user()->id;
+        $data['updated_at'] = $request->user()->id;
 
         /** @var \Illuminate\Http\UploadedFile $image */
         $image = $data['image'] ?? null;
@@ -57,8 +53,8 @@ class UserController extends Controller
             $data['image_mime'] = $image->getClientMimeType();
             $data['image_size'] = $image->getSize();
         }
-        $user = User::create($data);
-        return new UserResource($user);
+        $product = Product::create($data);
+        return new ProductResource($product);
     }
     private function saveImage(\Illuminate\Http\UploadedFile $image)
     {
@@ -72,31 +68,27 @@ class UserController extends Controller
 
         return $path . '/' . $image->getClientOriginalName();
     }
-
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\User  $user
+     * @param  \App\Models\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function show(User $user)
+    public function show(Product $product)
     {
-        return new UserResource($user);
+        return new ProductResource($product);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\UserRequest  $request
-     * @param  \App\Models\User  $user
+     * @param  \App\Http\Requests\UpdateProductRequest  $request
+     * @param  \App\Models\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function update(UserRequest $request, User $user)
+    public function update(ProductRequest $request, Product $product)
     {
         $data = $request->validated();
-        if (!empty($data['password'])) {
-            $data['password'] = \Hash::make($data['password']);
-        }
         $data['updated_by'] = $request->user()->id;
 
         /** @var \Illuminate\Http\UploadedFile $image */
@@ -109,23 +101,25 @@ class UserController extends Controller
             $data['image_size'] = $image->getSize();
 
             // If there is an old image, delete it
-            if ($user->image) {
-                Storage::deleteDirectory('/public/' . dirname($user->image));
+            if ($product->image) {
+                Storage::deleteDirectory('/public/' . dirname($product->image));
             }
         }
-        $user->update($data);
-        return new UserResource($user);
+
+        $product->update($data);
+
+        return new ProductResource($product);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\User  $user
+     * @param  \App\Models\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function destroy(User $user)
+    public function destroy(Product $product)
     {
-        $user->delete();
+        $product->delete();
         return response()->noContent();
     }
 }
